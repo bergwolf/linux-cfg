@@ -1,0 +1,15 @@
+[core]
+        editor = vim
+        filemode = true
+[alias]
+        ci = commit -s
+[color]
+        diff = auto
+[user]
+        name = Peng Tao
+        email = tao.peng@emc.com
+[sendmail]
+        chainreplyto = true
+[http]
+	postBuffer = 524288000
+
