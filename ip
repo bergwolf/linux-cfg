@@ -1,0 +1,38 @@
+Life:
+Cost center:72061
+FAX 18f: 82158812
+Printer:user/user or user/12345
+
+Sorin's Cell:	617 5100422
+
+----------------------------------------------------------
+
+Work:
+Viso XP: 10.32.231.166	admin/nasadmin
+Brian's ESX: 10.244.76.84	root/foobar33
+Brian's VM1: 10.244.76.106	root/foobar33
+Brian's Dart CS: 10.244.76.228	nasadmin/nasadmin
+Jim's client: 10.244.72.165 	root/nasadmin
+
+Jim's farm:
+control station		10.244.72.230		nasadmin/nasadmin
+
+ESX 10.244.72.249		ecsg\mpfsivc	mpfsivc
+ESX server:
+10.244.72.200		root/nasadmin
+10.244.72.210		root/nasadmin
+
+72 is for management and 74 is for iSCSI
+VMs Eth0		Eth1
+10.244.72.110	10.244.74.110
+10.244.72.111	10.244.74.111
+10.244.72.112	10.244.74.112
+10.244.72.113	10.244.74.113
+10.244.72.114	10.244.74.114
+10.244.72.115	10.244.74.115
+10.244.72.116	10.244.74.116
+10.244.72.117	10.244.74.117
+
+BJ env:
+bjbuild:	10.32.231.153
+mpfssvr:	10.32.70.62
