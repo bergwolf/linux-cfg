@@ -36,3 +36,6 @@ VMs Eth0		Eth1
 BJ env:
 bjbuild:	10.32.231.153
 mpfssvr:	10.32.70.62
+
+Dell:
+MAC:		00-26-B9-A0-09-39
