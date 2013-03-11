@@ -1,0 +1,13 @@
+#! /bin/bash
+
+CLUSTER="PLFS-LXC1 PLFS-LXC2 PLFS-LXC3 PLFS-LXC4"
+
+if [ $# -lt 1 ]; then
+	echo "no cmd?"
+	exit 1
+fi
+
+for I in `echo $CLUSTER`; do
+	echo "$I: $@"
+	ssh $I $@
+done
