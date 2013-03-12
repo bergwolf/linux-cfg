@@ -408,6 +408,7 @@ let g:DoxygenToolkit_licenseTag="Copyright (C) 2010 <bergwolf@gmail.com>"
 "}}}
 
 " recursively load custom .vimrc
+" {{{
 au BufNewFile,BufRead * call CheckForCustomConfiguration()
 
 function! CheckForCustomConfiguration()
@@ -432,4 +433,4 @@ function! CheckForCustomConfiguration()
         exe 'source' ../../../../../../../../.vim.custom
     endif
 endfunction
-
+"}}}
