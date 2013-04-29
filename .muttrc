@@ -1,0 +1,26 @@
+set mbox_type=Maildir
+set folder=~/docs/mail/
+set spoolfile=+/INBOX
+set mbox = "+inbox"
+set copy
+set record = "+[Gmail].Sent Mail"
+set postponed = "+draft"
+set header_cache=~/docs/mail/.hcache
+
+macro index G "!/usr/bin/offlineimap \n" "Checking mails......"
+
+set realname='Peng Tao'
+
+set sendmail="/usr/bin/msmtp"
+
+mailboxes ! + `\ for file in ~/Maildir/.*; do \
+  box=$(basename "$file"); \
+  if [ ! "$box" = '.' -a ! "$box" = '..' -a ! "$box" = '.customflags' \
+      -a ! "$box" = '.subscriptions' -a ! "$box" = '.hcache' -a ! "$box" = '.msmtp.log' ]; then \
+    echo -n "\"+$box\" "; \
+  fi; \
+done`
+
+# sources
+#source ~/.mutt/colours
+source ~/.mutt/auto-view
