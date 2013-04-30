@@ -7,9 +7,13 @@
         diff = auto
 [user]
         name = Peng Tao
-        email = tao.peng@emc.com
-[sendmail]
+        email = bergwolf@gmail.com
+[sendemail]
         chainreplyto = true
+	smtpencryption = tls
+	smtpserver = smtp.gmail.com
+	smtpuser = bergwolf@gmail.com
+	smtpserverport = 587
 [http]
 	postBuffer = 524288000
 
