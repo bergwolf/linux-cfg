@@ -36,7 +36,7 @@ VMs Eth0		Eth1
 
 BJ env:
 bjbuild:	10.32.231.153
-mpfssvr:	10.32.70.62
+mpfssvr:	10.32.231.40
 
 QA's systems:
 10.244.75.70    CN1
