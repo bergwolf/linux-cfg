@@ -236,8 +236,10 @@ set nowb
 set noswapfile
 
 " file type plugin
+set rtp+=/home/bergwolf/bin/go/misc/vim/
 filetype plugin on
 filetype indent on
+syntax on
 
 " file encoding
 set fenc=utf-8
@@ -367,7 +369,7 @@ map <leader>H   :%!xxd -r<cr>
 " {{{
 func! AddGPLSig()
 	exec 'normal HO/*'
-    exec 'normal oCopyright (C) 2012 <bergwolf@gmail.com>'
+    exec 'normal oCopyright (C) 2013 <bergwolf@gmail.com>'
 	exec 'normal o'
     exec 'normal oThis program is free software; you can redistribute it and/or modify it'
 	exec 'normal ounder the terms of version 2 of the GNU General Public License as'
@@ -408,8 +410,7 @@ let g:DoxygenToolkit_licenseTag="Copyright (C) 2010 <bergwolf@gmail.com>"
 "}}}
 
 " recursively load custom .vimrc
-" {{{
-au BufNewFile,BufRead * call CheckForCustomConfiguration()
+au BufNewFile,BufRead * call CheckForCustomConfiguration()"{{{
 
 function! CheckForCustomConfiguration()
     " Check for .vim.custom recursively in current or upper directories
@@ -420,17 +421,17 @@ function! CheckForCustomConfiguration()
     elseif filereadable("../../.vim.custom")
         exe 'source ../../.vim.custom'
     elseif filereadable("../../../.vim.custom")
-        exe 'source' ../../../.vim.custom
+        exe 'source ../../../.vim.custom'
     elseif filereadable("../../../../.vim.custom")
-        exe 'source' ../../../../.vim.custom
+        exe 'source ../../../../.vim.custom'
     elseif filereadable("../../../../../.vim.custom")
-        exe 'source' ../../../../../.vim.custom
+        exe 'source ../../../../../.vim.custom'
     elseif filereadable("../../../../../../.vim.custom")
-        exe 'source' ../../../../../../.vim.custom
+        exe 'source ../../../../../../.vim.custom'
     elseif filereadable("../../../../../../../.vim.custom")
-        exe 'source' ../../../../../../../.vim.custom
+        exe 'source ../../../../../../../.vim.custom'
     elseif filereadable("../../../../../../../../.vim.custom")
-        exe 'source' ../../../../../../../../.vim.custom
+        exe 'source ../../../../../../../../.vim.custom'
     endif
 endfunction
 "}}}
