@@ -8,12 +8,14 @@ bind generic "\e<"   first-entry
 bind generic "\e>"   last-entry
 bind generic "<"     first-entry
 bind generic ">"     last-entry
-bind generic <home>  first-entry
-bind generic <end>   last-entry
+bind generic H	     first-entry
+bind generic E	     last-entry
 bind generic <left>  previous-entry
 bind generic <right> next-entry
 
 # Specific key bindings.
+bind index   n       next-page
+bind index   p       previous-page
 bind index   "{"      previous-thread
 bind index   "}"      next-thread
 bind index   "x"      noop

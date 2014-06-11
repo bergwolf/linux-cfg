@@ -1,0 +1,36 @@
+[general]
+# list of the configured accounts
+accounts = Personal
+fsync = False
+
+[Account Personal]
+localrepository = Local
+remoterepository = Remote
+#autorefresh = 10 # no autorefresh, i run it one-shot each time
+quick = 30
+status_backend = sqlite
+maxage = 900
+
+[Repository Local]
+type = Maildir
+localfolders = /home/bergwolf/mail/
+
+[Repository Remote]
+type = Gmail
+remoteuser = <user>
+realdelete = no
+# google app-specific password
+remotepass = <pass>
+ssl = yes
+maxconnections = 5
+holdconnectionopen = yes
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+postsynchook = notmuch new
+
+[mbnames]
+enabled = yes
+filename = ~/.mutt/mailboxes
+header = "mailboxes "
+peritem = "+%(accountname)s/%(foldername)s"
+sep = " "
+footer = "\n"

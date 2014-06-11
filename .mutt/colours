@@ -4,38 +4,38 @@
 #
 
 # Default colour definitions
-color hdrdefault black        cyan
-color quoted     red          white
-color signature  brightblack  white
-color indicator  brightwhite  red
-color attachment black        green
-color error      red          white
-color message    blue         white
-color search     brightwhite  magenta
-color status     brightyellow blue
-color tree       red          white
-color normal     blue         white
-color tilde      green        white
-color bold       brightyellow white
-color markers    red          white
+#color hdrdefault black        cyan
+#color quoted     red          black
+#color signature  brightblack  black
+#color indicator  brightblack  red
+#color attachment black        green
+#color error      red          black
+#color message    blue         black
+#color search     brightblack  magenta
+#color status     brightyellow blue
+#color tree       red          black
+#color normal     blue         black
+#color tilde      green        black
+#color bold       brightyellow black
+#color markers    red          black
 
 # Colour definitions when on a mono screen
-mono bold      bold
-mono underline underline
-mono indicator reverse
+#mono bold      bold
+#mono underline underline
+#mono indicator reverse
 
 # Colours for items in the reader
-color header brightwhite cyan "^(From|Subject):"
+color header brightblack cyan "^(From|Subject):"
 color header red         cyan "^X-Junked-Because: "
 color header red         cyan "^X-Virus-hagbard: .* FOUND"
 mono  header bold             "^(From|Subject|X-Junked-Because|X-Virus-hagbard):"
 
 # Colours for items in the index
-color index brightblue  white ~N
-color index brightgreen white "~N (~x hagbard\.davep\.org | ~h \"^In-[Rr]eply-[Tt]o: .*hagbard\.davep\.org\")"
-color index red         white ~F
+color index brightblue  black ~N
+color index brightgreen black "~N (~x hagbard\.davep\.org | ~h \"^In-[Rr]eply-[Tt]o: .*hagbard\.davep\.org\")"
+color index red         black ~F
 color index black       green ~T
-color index brightwhite black ~D
+color index brightblack black ~D
 mono  index bold              ~N
 mono  index bold              ~F
 mono  index bold              ~T
@@ -44,23 +44,28 @@ mono  index bold              ~D
 # Highlights inside the body of a message.
 
 # URLs
-color body brightblue  white "(http|https|ftp|news|telnet|finger)://[^ \">\t\r\n]*"
-color body brightblue  white "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
-color body brightblue  white "news:[^ \">\t\r\n]*"
+color body brightblue  black "(http|https|ftp|news|telnet|finger)://[^ \">\t\r\n]*"
+color body brightblue  black "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+color body brightblue  black "news:[^ \">\t\r\n]*"
 mono  body bold              "(http|https|ftp|news|telnet|finger)://[^ \">\t\r\n]*"
 mono  body bold              "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
 mono  body bold              "news:[^ \">\t\r\n]*"
 
 # email addresses
-color body brightblue  white "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+color body brightblue  black "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
 mono  body bold              "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
 
 # Various smilies and the like
-color body brightgreen white "<[Gg]>"                                            # <g>
-color body brightgreen white "<[Bb][Gg]>"                                        # <bg>
-color body brightgreen white " [;:]-*[)>(<|]"                                    # :-) etc...
-color body brightblue  white "(^|[[:space:]])\\*[^[:space:]]+\\*([[:space:]]|$)" # *Bold* text.
-color body brightblue  white "(^|[[:space:]])_[^[:space:]]+_([[:space:]]|$)"     # _Underlined_ text.
-color body brightblue  white "(^|[[:space:]])/[^[:space:]]+/([[:space:]]|$)"     # /Italic/ text.
+color body brightgreen black "<[Gg]>"                                            # <g>
+color body brightgreen black "<[Bb][Gg]>"                                        # <bg>
+color body brightgreen black " [;:]-*[)>(<|]"                                    # :-) etc...
+color body brightblue  black "(^|[[:space:]])\\*[^[:space:]]+\\*([[:space:]]|$)" # *Bold* text.
+color body brightblue  black "(^|[[:space:]])_[^[:space:]]+_([[:space:]]|$)"     # _Underlined_ text.
+color body brightblue  black "(^|[[:space:]])/[^[:space:]]+/([[:space:]]|$)"     # /Italic/ text.
+color body brightred black "^-.*"
+color body brightgreen black "^[+].*"
+color body brightblack black "^diff --git.*"
+color body brightblack black "^index [a-f0-9].*"
+color body brightyellow black "^@@.*"
 
 
