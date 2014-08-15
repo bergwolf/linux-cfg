@@ -245,6 +245,13 @@ syntax on
 set fenc=utf-8
 set fencs=ucs-bom,utf-8,cp963,gb18030,iso8859-1,cp950,latinl
 
+" Uncomment the following to have Vim jump to the last position when
+" reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+    \| exe "normal g'\"" | endif
+endif
+
 "}}}
 
 " color settings
