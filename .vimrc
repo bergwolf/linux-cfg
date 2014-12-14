@@ -2,6 +2,59 @@
 "	vimrc by  <Bergwolf@gmail.com>
 "
 
+" Vundle goes first!!!
+"{{{
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" plugin on GitHub repo
+Plugin 'tpope/vim-fugitive'
+" plugin from http://vim-scripts.org/vim/scripts.html
+Plugin 'L9'
+
+" Git plugin not hosted on GitHub
+" Plugin 'git://git.wincent.com/command-t.git'
+
+" git repos on your local machine (i.e. when working on your own plugin)
+" Plugin 'file://home/bergwolf/.vim/plugin'
+
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+
+" Avoid a name conflict with L9
+" Plugin 'user/L9', {'name': 'newL9'}
+
+" golang plugin
+Plugin 'fatih/vim-go'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+"}}}
+
 " term specific settings
 "{{{
 " Try to get the correct main terminal type
@@ -235,12 +288,6 @@ set nobackup
 set nowb
 set noswapfile
 
-" file type plugin
-set rtp+=/home/bergwolf/bin/go/misc/vim/
-filetype plugin on
-filetype indent on
-syntax on
-
 " file encoding
 set fenc=utf-8
 set fencs=ucs-bom,utf-8,cp963,gb18030,iso8859-1,cp950,latinl
@@ -277,8 +324,8 @@ let Tlist_Use_Right_Window=1
 let Tlist_Sort_Type='name'
 
 " window manager
-"let g:winManagerWindowLayout='FileExplorer|TagList'
-let g:winManagerWindowLayout='TagList'
+let g:winManagerWindowLayout='FileExplorer|TagList'
+"let g:winManagerWindowLayout='TagList'
 
 " minibuffer
 let g:miniBufExplMapWindowNavVim = 1
@@ -293,7 +340,6 @@ let Grep_Skip_Dirs = 'RCS CVS SCCS .svn'
 set grepprg=grep\ -nH\ $*
 let g:Tex_DefaultTargetFormat="pdf"
 let g:Tex_ViewRule_pdf='xpdf'
-
 "}}}
 
 " maps
@@ -441,4 +487,38 @@ function! CheckForCustomConfiguration()
         exe 'source ../../../../../../../../.vim.custom'
     endif
 endfunction
+"}}}
+
+" vim-go setting
+" Show a list of interfaces which is implemented by the type under your cursor
+" with <leader>s
+"{{{
+au FileType go nmap <Leader>s <Plug>(go-implements)
+
+" Show type info for the word under your cursor with <leader>i (useful if you
+" have disabled auto showing type info via g:go_auto_type_info)
+au FileType go nmap <Leader>i <Plug>(go-info)
+
+" Open the relevant Godoc for the word under the cursor with <leader>gd or open
+" it vertically with <leader>gv
+au FileType go nmap <Leader>gd <Plug>(go-doc)
+au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+
+" Run commands, such as go run with <leader>r for the current file or go build
+" and go test for the current package with <leader>b and <leader>t. Display a
+" beautiful annotated source code to see which functions are covered with <leader>c.
+au FileType go nmap <leader>r <Plug>(go-run)
+au FileType go nmap <leader>b <Plug>(go-build)
+au FileType go nmap <leader>t <Plug>(go-test)
+au FileType go nmap <leader>c <Plug>(go-coverage)
+
+" By default the mapping gd is enabled which opens the target identifier in current
+" buffer. You can also open the definition/declaration in a new vertical, horizontal
+" tab for the word under your cursor:
+au FileType go nmap <Leader>ds <Plug>(go-def-split)
+au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+
+" Rename the identifier under the cursor to a new name
+au FileType go nmap <Leader>e <Plug>(go-rename)
 "}}}
