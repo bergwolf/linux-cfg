@@ -1,5 +1,6 @@
 "
-"	vimrc by  <Bergwolf@gmail.com>
+" Bergwolf's .vimrc, based on
+" https://github.com/fannheyward/vimrc/blob/master/vimrc
 "
 
 " Vundle goes first!!!
@@ -10,262 +11,149 @@ filetype off                  " required
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-Plugin 'tpope/vim-fugitive'
-" plugin from http://vim-scripts.org/vim/scripts.html
-Plugin 'L9'
-
-" Git plugin not hosted on GitHub
-" Plugin 'git://git.wincent.com/command-t.git'
-
-" git repos on your local machine (i.e. when working on your own plugin)
-" Plugin 'file://home/bergwolf/.vim/plugin'
-
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-
-" Avoid a name conflict with L9
-" Plugin 'user/L9', {'name': 'newL9'}
-
-" golang plugin
+Plugin 'tpope/vim-sensible'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'majutsushi/tagbar'
+"Plugin 'kien/ctrlp.vim'
+Plugin 'rking/ag.vim'
+Plugin 'vim-scripts/TaskList.vim'
+Plugin 'nacitar/a.vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'bronson/vim-trailing-whitespace'
+Plugin 'fannheyward/rainbow_parentheses.vim'
+Plugin 'vim-scripts/loremipsum'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
+Plugin 'dyng/ctrlsf.vim'
+Plugin 'mhinz/vim-startify'
 Plugin 'fatih/vim-go'
+Plugin 'bling/vim-airline'
+Plugin 'kana/vim-textobj-user'
+Plugin 'glts/vim-textobj-comment'
+Plugin 'Julian/vim-textobj-brace'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
 "}}}
 
-" term specific settings
-"{{{
-" Try to get the correct main terminal type
-if &term =~ "xterm"
-    let myterm = "xterm"
-else
-    let myterm =  &term
-endif
-let myterm = substitute(myterm, "cons[0-9][0-9].*$",  "linux", "")
-let myterm = substitute(myterm, "vt1[0-9][0-9].*$",   "vt100", "")
-let myterm = substitute(myterm, "vt2[0-9][0-9].*$",   "vt220", "")
-let myterm = substitute(myterm, "\\([^-]*\\)[_-].*$", "\\1",   "")
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" default config
+map <silent> <leader>ee :e ~/.vimrc<cr>"{{{
+map <silent> <leader>n :nohlsearch<cr>
 
-" Here we define the keys of the NumLock in keyboard transmit mode of xterm
-" which misses or hasn't activated Alt/NumLock Modifiers.  Often not defined
-" within termcap/terminfo and we should map the character printed on the keys.
-if myterm == "xterm" || myterm == "kvt" || myterm == "gnome"
-    " keys in insert/command mode.
-    map! <ESC>Oo  :
-    map! <ESC>Oj  *
-    map! <ESC>Om  -
-    map! <ESC>Ok  +
-    map! <ESC>Ol  ,
-"    map! <ESC>OM  
-    map! <ESC>Ow  7
-    map! <ESC>Ox  8
-    map! <ESC>Oy  9
-    map! <ESC>Ot  4
-    map! <ESC>Ou  5
-    map! <ESC>Ov  6
-    map! <ESC>Oq  1
-    map! <ESC>Or  2
-    map! <ESC>Os  3
-    map! <ESC>Op  0
-    map! <ESC>On  .
-    " keys in normal mode
-    map <ESC>Oo  :
-    map <ESC>Oj  *
-    map <ESC>Om  -
-    map <ESC>Ok  +
-    map <ESC>Ol  ,
-"    map <ESC>OM  
-    map <ESC>Ow  7
-    map <ESC>Ox  8
-    map <ESC>Oy  9
-    map <ESC>Ot  4
-    map <ESC>Ou  5
-    map <ESC>Ov  6
-    map <ESC>Oq  1
-    map <ESC>Or  2
-    map <ESC>Os  3
-    map <ESC>Op  0
-    map <ESC>On  .
-endif
+nmap ? /\<\><Left><Left>
 
-" xterm but without activated keyboard transmit mode
-" and therefore not defined in termcap/terminfo.
-if myterm == "xterm" || myterm == "kvt" || myterm == "gnome"
-    " keys in insert/command mode.
-    map! <Esc>[H  <Home>
-    map! <Esc>[F  <End>
-    " Home/End: older xterms do not fit termcap/terminfo.
-    map! <Esc>[1~ <Home>
-    map! <Esc>[4~ <End>
-    " Up/Down/Right/Left
-    map! <Esc>[A  <Up>
-    map! <Esc>[B  <Down>
-    map! <Esc>[C  <Right>
-    map! <Esc>[D  <Left>
-    " KP_5 (NumLock off)
-    map! <Esc>[E  <Insert>
-    " PageUp/PageDown
-    map <ESC>[5~ <PageUp>
-    map <ESC>[6~ <PageDown>
-    map <ESC>[5;2~ <PageUp>
-    map <ESC>[6;2~ <PageDown>
-    map <ESC>[5;5~ <PageUp>
-    map <ESC>[6;5~ <PageDown>
-    " keys in normal mode
-    map <ESC>[H  0
-    map <ESC>[F  $
-    " Home/End: older xterms do not fit termcap/terminfo.
-    map <ESC>[1~ 0
-    map <ESC>[4~ $
-    " Up/Down/Right/Left
-    map <ESC>[A  k
-    map <ESC>[B  j
-    map <ESC>[C  l
-    map <ESC>[D  h
-    " KP_5 (NumLock off)
-    map <ESC>[E  i
-    " PageUp/PageDown
-    map <ESC>[5~ 
-    map <ESC>[6~ 
-    map <ESC>[5;2~ 
-    map <ESC>[6;2~ 
-    map <ESC>[5;5~ 
-    map <ESC>[6;5~ 
-endif
+set guifont=Monaco:h15
+set guifontwide=Monaco:h15
+colorscheme desert
+set background=dark
 
-" xterm/kvt but with activated keyboard transmit mode.
-" Sometimes not or wrong defined within termcap/terminfo.
-if myterm == "xterm" || myterm == "kvt" || myterm == "gnome"
-    " keys in insert/command mode.
-    map! <Esc>OH <Home>
-    map! <Esc>OF <End>
-    map! <ESC>O2H <Home>
-    map! <ESC>O2F <End>
-    map! <ESC>O5H <Home>
-    map! <ESC>O5F <End>
-    " Cursor keys which works mostly
-    " map! <Esc>OA <Up>
-    " map! <Esc>OB <Down>
-    " map! <Esc>OC <Right>
-    " map! <Esc>OD <Left>
-    map! <Esc>[2;2~ <Insert>
-    map! <Esc>[3;2~ <Delete>
-    map! <Esc>[2;5~ <Insert>
-    map! <Esc>[3;5~ <Delete>
-    map! <Esc>O2A <PageUp>
-    map! <Esc>O2B <PageDown>
-    map! <Esc>O2C <S-Right>
-    map! <Esc>O2D <S-Left>
-    map! <Esc>O5A <PageUp>
-    map! <Esc>O5B <PageDown>
-    map! <Esc>O5C <S-Right>
-    map! <Esc>O5D <S-Left>
-    " KP_5 (NumLock off)
-    map! <Esc>OE <Insert>
-    " keys in normal mode
-    map <ESC>OH  0
-    map <ESC>OF  $
-    map <ESC>O2H  0
-    map <ESC>O2F  $
-    map <ESC>O5H  0
-    map <ESC>O5F  $
-    " Cursor keys which works mostly
-    " map <ESC>OA  k
-    " map <ESC>OB  j
-    " map <ESC>OD  h
-    " map <ESC>OC  l
-    map <Esc>[2;2~ i
-    map <Esc>[3;2~ x
-    map <Esc>[2;5~ i
-    map <Esc>[3;5~ x
-    map <ESC>O2A  ^B
-    map <ESC>O2B  ^F
-    map <ESC>O2D  b
-    map <ESC>O2C  w
-    map <ESC>O5A  ^B
-    map <ESC>O5B  ^F
-    map <ESC>O5D  b
-    map <ESC>O5C  w
-    " KP_5 (NumLock off)
-    map <ESC>OE  i
-endif
+" Chinese encodingcoding
+set encoding=utf-8
+set fileencodings=utf-8,gbk,chinese,cp936,gb18030,utf-16le,utf-16,big5,euc-jp,euc-kr,latin-1
+set fileencoding=utf-8
 
-if myterm == "linux"
-    " keys in insert/command mode.
-    map! <Esc>[G  <Insert>
-    " KP_5 (NumLock off)
-    " keys in normal mode
-    " KP_5 (NumLock off)
-    map <ESC>[G  i
-endif
-
-" This escape sequence is the well known ANSI sequence for
-" Remove Character Under The Cursor (RCUTC[tm])
-map! <Esc>[3~ <Delete>
-map  <ESC>[3~    x
-"}}}
-
-" basic configurations
-""{{{
-" enable syntax highlighting
-syntax on
-
-" automatically indent lines (not default)
-"set autoindent
-
-" keep status bar
-"set laststatus=2
-
-" select case-insenitive search (not default)
-" set ignorecase
-
-" show cursor line and column in the status line
-set ruler
-
-" show matching brackets
-set showmatch
-
-" display mode INSERT/REPLACE/...
-set showmode
-
-" changes special characters in search patterns (default)
-" set magic
-
-" Required to be able to use keypad keys and map missed escape sequences
-set esckeys
-
-" get easier to use and more user friendly vim defaults
-" CAUTION: This option breaks some vi compatibility. 
-"          Switch it off if you prefer real vi compatibility
-set nocompatible
-
-" Complete longest common string, then each full match
-" enable this for bash compatible behaviour
-" set wildmode=longest,full
+"set undofile
+"set undodir=~/.undodir
+"set undolevels=1000
 
 set number
+setlocal noswapfile
+set smartindent       "set smart indent
+set tabstop=8
+set shiftwidth=8
+set nofoldenable
+set showmatch
+set matchtime=2
+set matchpairs+=<:>
+set hlsearch
+set ignorecase smartcase
+set completeopt=longest,menu
+let do_syntax_sel_menu=1
+set updatetime=200
+
+" Allow saving of files as sudo when I forgot to start vim using sudo.
+cmap w!! %!sudo tee > /dev/null %
+
+" some autocmd
+autocmd FileType html,javascript,css setlocal shiftwidth=2 tabstop=2
+
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+
+:command W w
+:command Q q
+:command Qa qa
+:command Wa wa
+:command Wqa wqa
+:command WQa wqa
+
+"" Recommended key-mappings. For no inserting <CR> key.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return pumvisible() ? "\<C-n>\<C-y>" : "\<CR>"
+endfunction
+
+" Plugin config.
+" CtrlP
+" let g:ctrlp_custom_ignore = '\v[\/](bower_components|node_modules|vendor|target|dist|_site|nginx_runtime|build|logs|data)|(\.(swp|ico|git|svn))$'
+" set wildignore+=*.pyc,*.sqlite,*.sqlite3
+" set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+" set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+" set wildignore+=*/bower_components/*,*/node_modules/*
+" set wildignore+=*/nginx_runtime/*,*/build/*,*/logs/*
+
+" CtrlSF
+:com! -n=* F CtrlSF <args>
+:com! -n=0 FOpen CtrlSFOpen
+"let g:ctrlsf_auto_close = 0
+
+" Tasklist
+let g:tlTokenList = ['TODO' , 'WTF', 'FIX']
+
+" rainbow_parentheses
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadSquare " []
+au Syntax * RainbowParenthesesLoadBraces " {}
+"au Syntax * RainbowParenthesesLoadChevrons " <>
+
+" Tagbar
+let g:tagbar_autofocus = 1
+let g:tagbar_autoclose = 1
+
+" YCM
+nnoremap <buffer> <silent> gd :YcmCompleter GoTo<cr>
+let g:ycm_complete_in_comments = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_server_log_level = 'error'
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+
+" UltiSnips
+let g:UltiSnipsExpandTrigger="<c-k>"
+let g:UltiSnipsJumpForwardTrigger="<c-k>"
+let g:UltiSnipsJumpBackwardTrigger="<c-b>"
+
+" Vim-go
+let g:go_fmt_command = "goimports"
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+"}}}
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" My own configurations...
+"{{{
 set foldmethod=marker
 
 " auto format
@@ -278,39 +166,12 @@ set novisualbell
 set vb t_vb=
 
 " allow backspace to delete everything in insert mode
-set bs=2 
-
-" high light search
-set hls
+set bs=2
 
 " no backups
 set nobackup
 set nowb
 set noswapfile
-
-" file encoding
-set fenc=utf-8
-set fencs=ucs-bom,utf-8,cp963,gb18030,iso8859-1,cp950,latinl
-
-" Uncomment the following to have Vim jump to the last position when
-" reopening a file
-if has("autocmd")
-  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-    \| exe "normal g'\"" | endif
-endif
-
-"}}}
-
-" color settings
-""{{{
-if has("gui_running")
-	set guioptions-=T
-	let psc_style='cool'
-	colorscheme desert
-else
-	set background=dark
-	colorscheme desert
-endif 
 "}}}
 
 " plugin configurations
@@ -324,14 +185,14 @@ let Tlist_Use_Right_Window=1
 let Tlist_Sort_Type='name'
 
 " window manager
-let g:winManagerWindowLayout='FileExplorer|TagList'
-"let g:winManagerWindowLayout='TagList'
+"let g:winManagerWindowLayout='FileExplorer|TagList'
+let g:winManagerWindowLayout='TagList'
 
 " minibuffer
 let g:miniBufExplMapWindowNavVim = 1
 let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplMapCTabSwitchBufs = 1
-let g:miniBufExplModSelTarget = 1 
+let g:miniBufExplModSelTarget = 1
 
 " vim Grep
 let Grep_Skip_Dirs = 'RCS CVS SCCS .svn'
@@ -344,15 +205,15 @@ let g:Tex_ViewRule_pdf='xpdf'
 
 " maps
 "{{{
-nmap wm		:WMToggle<cr>
-nmap dk		d$
-nmap <F6>	:cn<cr>
-nmap <F7>	:cp<cr>
-nnoremap <silent><F5>	:Grep<cr>
-nmap zj		zf%
+nmap wm     :WMToggle<cr>
+nmap dk     d$
+nmap <F6>   :cn<cr>
+nmap <F7>   :cp<cr>
+nnoremap <silent><F5>   :Grep<cr>
+nmap zj     zf%
 " fast quit
-nmap qq	:q<cr>
-nmap qa	:q<cr>:q<cr>:q<cr>:q<cr>:q<cr>:q<cr>
+nmap qq :q<cr>
+nmap qa :q<cr>:q<cr>:q<cr>:q<cr>:q<cr>:q<cr>
 
 nmap <space> :
 " fast save
@@ -360,110 +221,18 @@ nmap <leader>w :w<cr>
 " remove the Windows ^M
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 " switch buffer
-nmap <c-p>	<c-k><tab><cr>
-nmap <c-n>	<c-k>b<cr>
+nmap <c-p>  <c-k><tab><cr>
+nmap <c-n>  <c-k>b<cr>
 " close other buffer
-nmap <Leader>d	<c-k><tab>d<c-j><c-k>d<c-j><c-k>d<c-j><c-k>d<c-j><c-k>d<c-j>
+nmap <Leader>d  <c-k><tab>d<c-j><c-k>d<c-j><c-k>d<c-j><c-k>d<c-j><c-k>d<c-j>
 " close current buffer
-nmap <Leader>c	<c-k>d<cr><c-j>
-nmap <c-->	<c-w>-
-
-" comment and uncomment
-
-"F3 for comment
-vmap <F3> :s=^\(//\)*=//=g<cr>:noh<cr>
-nmap <F3> :s=^\(//\)*=//=g<cr>:noh<cr>
-imap <F3> <ESC>:s=^\(//\)*=//=g<cr>:noh<cr>
-"F4 for uncomment
-vmap <F4> :s=^\(//\)*==g<cr>:noh<cr>
-nmap <F4> :s=^\(//\)*==g<cr>:noh<cr>
-imap <F4> <ESC>:s=^\(//\)*==g<cr>:noh<cr>
-"}}}
-
-" Indent
-"Auto indent"{{{
-"set noai
-
-"Smart indet
-"set nosi
-"set noci
-
-"Wrap lines
-set wrap
-set textwidth=80
-"set columns=80
-set cindent
-"set shiftwidth=3
-set shiftwidth=8
-set tabstop=8
-"set expandtab
-
-"}}}
-
-" functions
-" Highlight Current word {{{
-function VIMRCWhere()
-	if !exists("s:highlightcursor")
-		match Todo /\k*\%#\k*/
-		let s:highlightcursor=1
-	else
-		match None
-		unlet s:highlightcursor
-	endif
-endfunction
-	map <leader>r :call VIMRCWhere()<CR>
-
-map <leader>h   :%!xxd<cr>
-map <leader>H   :%!xxd -r<cr>
-
-"}}}
-
-" Signature for source files
-" {{{
-func! AddGPLSig()
-	exec 'normal HO/*'
-    exec 'normal oCopyright (C) 2013 <bergwolf@gmail.com>'
-	exec 'normal o'
-    exec 'normal oThis program is free software; you can redistribute it and/or modify it'
-	exec 'normal ounder the terms of version 2 of the GNU General Public License as'
-	exec 'normal opublished by the Free Software Foundation.'
-	exec 'normal o'
-    exec 'normal oThis program is distributed in the hope that it will be useful,'
-    exec 'normal obut WITHOUT ANY WARRANTY; without even the implied warranty of'
-    exec 'normal oMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the'
-    exec 'normal oGNU General Public License for more details.'
-	exec 'normal o'
-	exec 'normal oYou should have received a copy of the GNU General Public License'
-	exec 'normal oalong with this program; if not, write to the Free Software'
-	exec 'normal oFoundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA'
-	exec 'normal o/'
-endfunc
-
-func! AddCodeSig()
-	exec 'normal HO/*'
-	exec 'normal oCopyright (C) 2012 Peng Tao <bergwolf@gmail.com>'
-	exec 'normal o/'
-endfunc
-
-func! AddCStyleHeader()
-        exec 'normal HO/* -*- mode: c; c-basic-offset: 3; indent-tabs-mode: nil; -*-'
-        exec 'normal o * vim:expandtab:shiftwidth=3:tabstop=3:columns=89:'
-        exec 'normal o/'
-endfunc
-
-map <Leader>u gg:call AddCStyleHeader()<CR>
-map <Leader>s gg:call AddCodeSig()<CR>
-map <Leader>g gg:call AddGPLSig()<CR>
-
-let g:DoxygenToolkit_authorName="Bergwolf"
-let g:DoxygenToolkit_briefTag_funcName="yes"
-let g:DoxygenToolkit_versionString="1.0"
-let g:DoxygenToolkit_licenseTag="Copyright (C) 2010 <bergwolf@gmail.com>"
-
+nmap <Leader>c  <c-k>d<cr><c-j>
+nmap <c-->  <c-w>-
 "}}}
 
 " recursively load custom .vimrc
-au BufNewFile,BufRead * call CheckForCustomConfiguration()"{{{
+"{{{
+au BufNewFile,BufRead * call CheckForCustomConfiguration()
 
 function! CheckForCustomConfiguration()
     " Check for .vim.custom recursively in current or upper directories
@@ -487,38 +256,4 @@ function! CheckForCustomConfiguration()
         exe 'source ../../../../../../../../.vim.custom'
     endif
 endfunction
-"}}}
-
-" vim-go setting
-" Show a list of interfaces which is implemented by the type under your cursor
-" with <leader>s
-"{{{
-au FileType go nmap <Leader>s <Plug>(go-implements)
-
-" Show type info for the word under your cursor with <leader>i (useful if you
-" have disabled auto showing type info via g:go_auto_type_info)
-au FileType go nmap <Leader>i <Plug>(go-info)
-
-" Open the relevant Godoc for the word under the cursor with <leader>gd or open
-" it vertically with <leader>gv
-au FileType go nmap <Leader>gd <Plug>(go-doc)
-au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
-
-" Run commands, such as go run with <leader>r for the current file or go build
-" and go test for the current package with <leader>b and <leader>t. Display a
-" beautiful annotated source code to see which functions are covered with <leader>c.
-au FileType go nmap <leader>r <Plug>(go-run)
-au FileType go nmap <leader>b <Plug>(go-build)
-au FileType go nmap <leader>t <Plug>(go-test)
-au FileType go nmap <leader>c <Plug>(go-coverage)
-
-" By default the mapping gd is enabled which opens the target identifier in current
-" buffer. You can also open the definition/declaration in a new vertical, horizontal
-" tab for the word under your cursor:
-au FileType go nmap <Leader>ds <Plug>(go-def-split)
-au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
-au FileType go nmap <Leader>dt <Plug>(go-def-tab)
-
-" Rename the identifier under the cursor to a new name
-au FileType go nmap <Leader>e <Plug>(go-rename)
 "}}}
