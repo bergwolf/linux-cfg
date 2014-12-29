@@ -1,0 +1,95 @@
+#!/bin/sh
+#
+# VPN route config file for MAC
+#
+
+m_debug=0
+
+pd_iface=utun0
+amazon_iface=ppp0
+local_iface=en0
+
+pd_gw="`netstat -nr |grep $pd_iface| grep -v link|awk '{print $2}' | tail -n 1`"
+amazon_gw="`netstat -nr |grep $amazon_iface| grep -v link|awk '{print $2}' | tail -n 1`"
+is_amazon_default="`netstat -nr |grep default|grep $amazon_iface`"
+local_gw="`netstat -nr |grep $local_iface| grep -v link|grep default| awk '{print $2}' | tail -n 1`"
+VPNURLS="www.twitter.com golang.org"
+###### collection from whois (https://www.arin.net/)  #########
+#GOOGLE (NET-108-170-192-0-1)	108.170.192.0 - 108.170.255.255
+#GOOGLE (NET-108-177-0-0-1)	108.177.0.0 - 108.177.127.255
+#GOOGLE (NET-142-250-0-0-1)	142.250.0.0 - 142.251.255.255
+#GOOGLE (NET-172-217-0-0-1)	172.217.0.0 - 172.217.255.255
+#GOOGLE (NET-172-253-0-0-1)	172.253.0.0 - 172.253.255.255
+#GOOGLE (NET-173-194-0-0-1)	173.194.0.0 - 173.194.255.255
+#GOOGLE (NET-192-178-0-0-1)	192.178.0.0 - 192.179.255.255
+#GOOGLE (NET-199-87-241-32-1)	199.87.241.32 - 199.87.241.63
+#GOOGLE (NET-207-223-160-0-1)	207.223.160.0 - 207.223.175.255
+#GOOGLE (NET-209-85-128-0-1)	209.85.128.0 - 209.85.255.255
+#GOOGLE (NET-216-239-32-0-1)	216.239.32.0 - 216.239.63.255
+#GOOGLE (NET-216-58-192-0-1)	216.58.192.0 - 216.58.223.255
+#GOOGLE (NET-64-233-160-0-1)	64.233.160.0 - 64.233.191.255
+#GOOGLE (NET-66-102-0-0-1)	66.102.0.0 - 66.102.15.255
+#GOOGLE (NET-66-249-64-0-1)	66.249.64.0 - 66.249.95.255
+#GOOGLE (NET-70-32-128-0-1)	70.32.128.0 - 70.32.159.255
+#GOOGLE (NET-70-90-219-48-1)	70.90.219.48 - 70.90.219.55
+#GOOGLE (NET-70-90-219-72-1)	70.90.219.72 - 70.90.219.79
+#GOOGLE (NET-72-14-192-0-1)	72.14.192.0 - 72.14.255.255
+#GOOGLE (NET-74-125-0-0-1)	74.125.0.0 - 74.125.255.255
+#
+#FACEBOOK (NET-50-76-50-112-1)	50.76.50.112 - 50.76.50.127
+#
+################################################################
+GOOGLE_NET="108.170.192.0 108.177.0.0 142.250.0.0 172.217.0.0 172.253.0.0 173.194.0.0 192.178.0.0 \
+	    74.125.0.0 66.102.0.0"
+GOOGLE_DEST="199.87.241.32/27 207.223.160.0/20 209.85.128.0/17 216.239.32.0/19 216.58.192.0/19 \
+	    64.233.160.0/19 66.249.64.0/19 70.32.128.0/19 70.90.219.48/29 70.90.219.72/29 \
+	    72.14.192.0/18"
+FB_DEST="50.76.50.112/28"
+routing_net=""
+routing_dest=""
+
+if [ $m_debug -eq 1 ]; then
+	m_echo="echo"
+else
+	m_echo=""
+fi
+
+function find_address()
+{
+	desturl=$1
+	routing_net+="`nslookup $desturl | grep Address | grep -v \#53 | awk '{print $2}'` "
+}
+
+routing_net+="$GOOGLE_NET "
+routing_dest+="$GOOGLE_DEST "
+routing_dest+="$FB_DEST "
+
+for url in $(echo $VPNURLS); do
+	find_address $url
+done
+
+echo adding amazon routes
+if [ x$amazon_gw != "x" ]; then
+	if [ x"$is_amazon_default" != "x" ]; then
+		$m_echo /sbin/route delete default $amazon_gw
+	fi
+	for netaddr in $(echo $routing_dest); do
+		$m_echo /sbin/route add -net $netaddr $amazon_gw
+	done
+	for netaddr in $(echo $routing_net); do
+		$m_echo /sbin/route add -net $netaddr/16 $amazon_gw
+	done
+fi
+
+echo adding PD routes
+if [ x$pd_gw != "x" ]; then
+	# PD routes are configured by cisco VPN
+	$m_echo /sbin/route delete default $pd_gw
+fi
+
+echo making local gw default
+if [ x$local_gw != "x" ]; then
+	$m_echo /sbin/route delete -ifscope en0 default $local_gw
+	$m_echo /sbin/route add default $local_gw
+fi
+
