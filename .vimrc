@@ -2,6 +2,11 @@
 " Bergwolf's .vimrc, based on
 " https://github.com/fannheyward/vimrc/blob/master/vimrc
 "
+"1. git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+"2. :PluginInstall
+"3. cd ~/.vim/bundle/YouCompleteMe/ ;./install.sh --clang-completer --system-libclang
+"4. cp .ycm_extra_conf.py ~/
+"
 
 " Vundle goes first!!!
 "{{{
