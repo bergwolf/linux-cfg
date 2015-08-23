@@ -25,7 +25,8 @@
 #mono indicator reverse
 
 # Colours for items in the reader
-color header brightblack cyan "^(From|Subject):"
+color hdrdefault black  default
+color header brightred default "^(From|Subject):"
 color header red         cyan "^X-Junked-Because: "
 color header red         cyan "^X-Virus-hagbard: .* FOUND"
 mono  header bold             "^(From|Subject|X-Junked-Because|X-Virus-hagbard):"
@@ -52,20 +53,22 @@ mono  body bold              "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
 mono  body bold              "news:[^ \">\t\r\n]*"
 
 # email addresses
-color body brightblue  black "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+color body blue default "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
 mono  body bold              "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
 
 # Various smilies and the like
-color body brightgreen black "<[Gg]>"                                            # <g>
-color body brightgreen black "<[Bb][Gg]>"                                        # <bg>
-color body brightgreen black " [;:]-*[)>(<|]"                                    # :-) etc...
-color body brightblue  black "(^|[[:space:]])\\*[^[:space:]]+\\*([[:space:]]|$)" # *Bold* text.
-color body brightblue  black "(^|[[:space:]])_[^[:space:]]+_([[:space:]]|$)"     # _Underlined_ text.
-color body brightblue  black "(^|[[:space:]])/[^[:space:]]+/([[:space:]]|$)"     # /Italic/ text.
-color body brightred black "^-.*"
-color body brightgreen black "^[+].*"
-color body brightblack black "^diff --git.*"
-color body brightblack black "^index [a-f0-9].*"
-color body brightyellow black "^@@.*"
+color body brightgreen default "<[Gg]>"                                            # <g>
+color body brightgreen default "<[Bb][Gg]>"                                        # <bg>
+color body brightgreen default " [;:]-*[)>(<|]"                                    # :-) etc...
+color body brightblue  default "(^|[[:space:]])\\*[^[:space:]]+\\*([[:space:]]|$)" # *Bold* text.
+color body brightblue  default "(^|[[:space:]])_[^[:space:]]+_([[:space:]]|$)"     # _Underlined_ text.
+color body brightblue  default "(^|[[:space:]])/[^[:space:]]+/([[:space:]]|$)"     # /Italic/ text.
+color body red default "^-.*"
+color body green default "^[+].*"
+color body brightred default "^diff --git.*"
+color body brightred default "^index [a-f0-9].*"
+color body brightred default "^---.*"
+color body brightred default "^[+][+][+].*"
+color body brightblue default "^@@.*@@"
 
 

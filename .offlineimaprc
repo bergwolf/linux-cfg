@@ -14,6 +14,13 @@ maxage = 900
 [Repository Local]
 type = Maildir
 localfolders = /home/bergwolf/mail/
+nametrans = lambda folder: re.sub('spam', '[Google Mail].Spam',
+                           re.sub('drafts', '[Google Mail].Drafts',
+                           re.sub('sent', '[Google Mail].Sent Mail',
+                           re.sub('flagged', '[Google Mail].Starred',
+                           re.sub('trash', '[Google Mail].Trash',
+                           re.sub('important', '[Google Mail].Important',
+                           re.sub('archive', '[Google Mail].All Mail', folder)))))))
 
 [Repository Remote]
 type = Gmail
@@ -25,7 +32,15 @@ ssl = yes
 maxconnections = 5
 holdconnectionopen = yes
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+# sslcacertfile = /etc/pki/tls/certs/ca-bundle.crt
 postsynchook = notmuch new
+nametrans = lambda folder: re.sub('.*Spam$', 'spam',
+                           re.sub('.*Drafts$', 'drafts',
+                           re.sub('.*Sent Mail$', 'sent',
+                           re.sub('.*Starred$', 'flagged',
+                           re.sub('.*Trash$', 'trash',
+                           re.sub('.*Important$', 'important',
+                           re.sub('.*All Mail$', 'archive', folder)))))))
 
 [mbnames]
 enabled = yes

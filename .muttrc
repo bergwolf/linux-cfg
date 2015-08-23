@@ -6,6 +6,7 @@ set copy
 set record = "+[Gmail].Sent Mail"
 set postponed = "+draft"
 set header_cache=~/mail/.hcache
+set sort=threads
 
 set realname='Peng Tao'
 

@@ -28,6 +28,8 @@ bind alias   " "      tag-entry
 bind alias   "\r"     select-entry
 bind attach  "v"      select-entry
 bind compose "v"      view-attach
+bind pager   "\Cf"    next-page
+bind pager   "\Cb"    previous-page
 bind pager   "\e<"    top
 bind pager   "\e>"    bottom
 bind pager   "<"      top
@@ -36,8 +38,8 @@ bind pager   <home>   top
 bind pager   <end>    bottom
 bind pager   "{"      previous-thread
 bind pager   "}"      next-thread
-bind pager   <up>     previous-line
-bind pager   <down>   next-line
+bind pager   k        previous-line
+bind pager   j        next-line
 bind pager   <left>   previous-undeleted
 bind pager   <right>  next-undeleted
 bind pager   "t"      display-toggle-weed
