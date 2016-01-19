@@ -9,6 +9,7 @@
 
 startup_message off
 #nethack on
+defshell -bash
 
 #defflow on # will force screen to process ^S/^Q
 deflogin on
