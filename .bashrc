@@ -14,7 +14,10 @@ alias ll='ls -lh'
 alias df='df -h'
 #alias ssh='ssh -Y'
 alias pa='ps aux'
-alias cs='CPWD=`pwd`;find $CPWD -regex ".*\.[c,h][pp|xx]*" > cscope.files; cscope -bRql; ctags -R'
+alias cs='CPWD=`pwd`;find $CPWD -regex ".*\.[c,h][pp|xx]*" |grep -v rpmbuild |grep -v build > cscope.files; cscope -bRql;\
+		ctags -R --exclude=rpmbuild --exclude=build'
+alias mygdb='libtool --mode=execute gdb'
+alias myvalgrind='libtool --mode=execute valgrind --tool=memcheck --leak-check=full --leak-resolution=high'
 
 alias q='exit'
 alias r='screen -r'
@@ -35,17 +38,24 @@ PS1='\[\e[31;1m\][\h@\W]\[\e[0m\]\$'
 
 # Commented out, don't overwrite xterm -T "title" -n "icontitle" by default.
 # If this is an xterm set the title to user@host:dir
-#case "$TERM" in
-#xterm*|rxvt*)
-#    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
-#    ;;
-#*)
-#    ;;
-#esac
+case "$TERM" in
+xterm*|rxvt*)
+    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+    ;;
+screen*)
+    #PROMPT_COMMAND='echo -ne "\033k\033\134\033k${HOSTNAME}[`basename ${PWD}`]\033\134"'
+    PROMPT_COMMAND='echo -ne "\033k\033\0134\033k[`basename ${PWD}`]\033\0134"'
+    ;;
+*)
+    ;;
+esac
 
 # enable bash completion in interactive shells
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
+fi
+if [ -f /etc/profile ]; then
+    . /etc/profile
 fi
 
 alias ls='ls --color=auto'
@@ -64,8 +74,12 @@ export LANG="C"
 
 # golang & docker
 export DOCKER_HOST=tcp://localhost:2375
-export GOPATH=~/workplace/golang
+export GOPATH=$HOME/workplace/golang
 export GOROOT=$HOME/go
 PATH=/sbin:/usr/sbin:/usr/local/sbin:$PATH:~/bin:/usr/local/mysql/bin:$GOPATH/bin:$GOROOT/bin
 export PATH
 
+# primarydata env
+#export BUILDROOT=$HOME/src/primarydata
+#export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer
+#export ASAN_OPTIONS=symbolize=1
