@@ -16,4 +16,5 @@
 	smtpserverport = 587
 [http]
 	postBuffer = 524288000
-
+[apply]
+	whitespace=fix
