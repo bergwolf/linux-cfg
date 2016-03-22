@@ -44,6 +44,7 @@ Plugin 'bling/vim-airline'
 Plugin 'kana/vim-textobj-user'
 Plugin 'glts/vim-textobj-comment'
 Plugin 'Julian/vim-textobj-brace'
+Plugin 'Shougo/neocomplete.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -277,6 +278,22 @@ au FileType go nmap <Leader>e <Plug>(go-rename)
 " vim-oracle-go setting
 "
 au FileType go nmap gc :GoOracleCallers<cr>
+
+
+" My own vim-go mappings:
+au FileType go nmap <C-\>g :GoDef<CR>
+au FileType go nmap <C-\>s :GoDoc<CR>
+au FileType go nmap <C-\>t :GoTest<CR>
+au FileType go nmap <C-\>e :GoErrCheck<CR>
+au FileType go nmap <C-\>l :GoLint<CR>
+" oracle mappings:
+au FileType go nmap <C-\>d :GoOracleDescribe<CR>
+au FileType go nmap <C-\>i :GoOracleImplements<CR>
+au FileType go nmap <C-\>cr :GoOracleCallers<CR>
+au FileType go nmap <C-\>ce :GoOracleCallees<CR>
+au FileType go nmap <C-\>cg :GoOracleCallgraph<CR>
+au FileType go nmap <C-\>cp :GoOracleChannelPeers<CR>
+
 "}}}
 
 " recursively load custom .vimrc
