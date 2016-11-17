@@ -16,11 +16,6 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it! 
 
-if [[ "`uname`" == "Darwin" ]]; then
-    echo "Do not run this script on your mac! This script should only be run on a newly-created EC2 instance, after you have modified it to set the three variables below."
-    exit 1
-fi
-
 # Please define your own values for those variables
 IPSEC_PSK=
 VPN_USER=
@@ -30,7 +25,7 @@ VPN_PASSWORD=
 PRIVATE_IP=`wget -q -O - 'http://169.254.169.254/latest/meta-data/local-ipv4'`
 PUBLIC_IP=
 
-apt-get install -y openswan xl2tpd
+apt-get install -y strongswan xl2tpd
 
 cat > /etc/ipsec.conf <<EOF
 version 2.0
@@ -127,5 +122,5 @@ EOF
 
 chmod a+x /etc/network/if-pre-up.d/iptablesload
 
-/etc/init.d/ipsec restart
-/etc/init.d/xl2tpd restart
+service strongswan restart
+service xl2tpd restart
