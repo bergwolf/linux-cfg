@@ -1,0 +1,15 @@
+[source.crates-io]
+registry = "https://github.com/rust-lang/crates.io-index"
+replace-with = 'ustc'
+[source.ustc]
+registry = "git://mirrors.ustc.edu.cn/crates.io-index"
+[source.gitlab]
+registry = "http://gitlab.alibaba-inc.com/xianyou.cyq/crates.io-index.git"
+[source.rustcc]
+registry = "https://code.aliyun.com/rustcc/crates.io-index.git"
+#[source.thu]
+#registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
+[net]
+git-fetch-with-cli = true
+[http]
+multiplexing = false

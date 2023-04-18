@@ -41,6 +41,7 @@ Module.symvers
 !.gitignore
 !.mailmap
 !.vim
+!.cargo
 
 #
 # Generated include files
