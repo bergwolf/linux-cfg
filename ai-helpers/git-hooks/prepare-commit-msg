@@ -142,19 +142,23 @@ class GitHubModelsCommitGenerator:
 
 Generate a concise, clear commit message following these guidelines:
 
-1. Use conventional commits format: type(scope): description
-2. Types: feat, fix, docs, style, refactor, perf, test, chore, build, ci
-3. Keep the first line under 50 characters
-4. Use imperative mood (e.g., "add", "fix", "update")
-5. Don't end with a period
-6. Be specific about what changed
+1. Use conventional commits format: "scope: commit title" followed by a description.
+2. You MUST place an empty line between the title and description
+3. Scopes should be lowercase and descriptive (e.g., "ui", "api", "auth", "docs", "tests")
+4. Keep the commit title under 50 characters. Don't end with a period
+5. Use imperative mood (e.g., "add", "fix", "update")
+6. Be specific about what changed and why
+7. If multiple files are changed, summarize the main changes
+8. Wrap the description at 120 characters, do not cut in the middle of a word
+9. Use present tense (e.g., "add feature" not "added feature")
+10. Describe key changes in separate paragraphs, with empty lines between them
 
 Examples:
-- feat(auth): add OAuth2 login support
-- fix(parser): resolve memory leak in JSON processing
-- docs(api): update authentication examples
-- refactor(utils): extract validation helpers
-- test(api): add unit tests for user service
+```
+auth: add OAuth2 login support
+
+This commit adds support for OAuth2 login, allowing users to authenticate using their Google or GitHub accounts.
+```
 
 Analyze the provided diff and generate an appropriate commit message. 
 Return ONLY the commit message, nothing else."""
@@ -195,8 +199,8 @@ Return ONLY the commit message, nothing else."""
 
         # Add diff (truncated if too long)
         prompt_parts.append("\nGit diff:")
-        if len(diff) > 4000:  # Truncate very long diffs
-            prompt_parts.append(diff[:4000] + "\n... [diff truncated]")
+        if len(diff) > 16000:  # Truncate very long diffs
+            prompt_parts.append(diff[:16000] + "\n... [diff truncated]")
         else:
             prompt_parts.append(diff)
 
@@ -232,12 +236,6 @@ Return ONLY the commit message, nothing else."""
             )
 
             commit_message = response.choices[0].message.content.strip()
-
-            # Clean up the message
-            commit_message = commit_message.strip("\"'`")  # Remove quotes
-            commit_message = re.sub(
-                r"\n+", "\n", commit_message
-            )  # Remove extra newlines
 
             return commit_message
 
@@ -282,13 +280,14 @@ def main():
         generator = GitHubModelsCommitGenerator()
         commit_message = generator.generate_commit_message()
 
+        # first, let's see what's inside the commit message file
+        with open(commit_msg_file, "r") as f:
+            existing_message = f.read().strip()
+
         # Write to commit message file
         with open(commit_msg_file, "w") as f:
             f.write(commit_message + "\n\n")
-            f.write("# AI-generated commit message\n")
-            f.write("# Edit above to customize, or delete to write manually\n")
-
-        print(f"✨ Generated commit message: {commit_message}")
+            f.write(existing_message)
 
     except ValueError as e:
         print(f"Configuration error: {e}")
