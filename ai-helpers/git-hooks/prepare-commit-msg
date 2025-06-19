@@ -250,8 +250,36 @@ Return ONLY the commit message, nothing else."""
 def should_skip_generation(commit_source: Optional[str], commit_msg_file: str) -> bool:
     """Check if we should skip AI generation."""
     # Skip for certain commit types
-    if commit_source in ["merge", "template", "squash"]:
+    if commit_source in ["merge", "template", "squash", "cherry-pick"]:
         return True
+
+    # Skip if message already exists (and is not just comments, SOB lines, or git diff)
+    try:
+        with open(commit_msg_file, "r") as f:
+            content = f.read()
+
+        # Split content at the git commit -v diff separator
+        # Git adds diff after "# ------------------------ >8 ------------------------"
+        if "# ------------------------ >8 ------------------------" in content:
+            content = content.split(
+                "# ------------------------ >8 ------------------------"
+            )[0]
+
+        # Check if there's already meaningful content (excluding comments and SOB lines)
+        meaningful_lines = []
+        for line in content.split("\n"):
+            stripped = line.strip()
+            if (
+                stripped
+                and not stripped.startswith("#")
+                and not stripped.startswith("Signed-off-by:")
+            ):
+                meaningful_lines.append(stripped)
+
+        if meaningful_lines:
+            return True
+    except IOError:
+        pass
 
     return False
 
