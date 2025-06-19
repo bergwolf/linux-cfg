@@ -24,26 +24,28 @@ try:
     from azure.ai.inference.models import SystemMessage, UserMessage
     from azure.core.credentials import AzureKeyCredential
 except ImportError:
-    print("Error: azure-ai-inference package not found. Install with: pip install azure-ai-inference")
+    print(
+        "Error: azure-ai-inference package not found. Install with: pip install azure-ai-inference"
+    )
     sys.exit(1)
 
 
 class GitHubModelsCommitGenerator:
     """Generate commit messages using GitHub Models."""
-    
+
     def __init__(self):
         self.endpoint = "https://models.github.ai/inference"
         self.model = "openai/gpt-4.1-mini"
         self.token = os.environ.get("GITHUB_TOKEN")
-        
+
         if not self.token:
             raise ValueError("GITHUB_TOKEN environment variable is required")
-        
+
         self.client = ChatCompletionsClient(
             endpoint=self.endpoint,
             credential=AzureKeyCredential(self.token),
         )
-    
+
     def get_staged_diff(self) -> str:
         """Get the diff of staged changes."""
         try:
@@ -51,12 +53,12 @@ class GitHubModelsCommitGenerator:
                 ["git", "diff", "--cached", "--no-color"],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
             return result.stdout
         except subprocess.CalledProcessError:
             return ""
-    
+
     def get_staged_files(self) -> List[str]:
         """Get list of staged files."""
         try:
@@ -64,12 +66,12 @@ class GitHubModelsCommitGenerator:
                 ["git", "diff", "--cached", "--name-only"],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
-            return [f.strip() for f in result.stdout.split('\n') if f.strip()]
+            return [f.strip() for f in result.stdout.split("\n") if f.strip()]
         except subprocess.CalledProcessError:
             return []
-    
+
     def get_current_branch(self) -> Optional[str]:
         """Get current git branch name."""
         try:
@@ -77,12 +79,12 @@ class GitHubModelsCommitGenerator:
                 ["git", "symbolic-ref", "--short", "HEAD"],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
             return result.stdout.strip()
         except subprocess.CalledProcessError:
             return None
-    
+
     def analyze_changes(self, diff: str, files: List[str]) -> Dict[str, Any]:
         """Analyze the nature of changes."""
         analysis = {
@@ -95,75 +97,90 @@ class GitHubModelsCommitGenerator:
             "is_config": False,
             "has_breaking_changes": False,
             "languages": set(),
-            "file_types": set()
+            "file_types": set(),
         }
-        
+
         # Analyze file types and languages
         for file in files:
             ext = os.path.splitext(file)[1].lower()
             analysis["file_types"].add(ext)
-            
-            if ext in ['.py', '.js', '.ts', '.java', '.cpp', '.c', '.go', '.rs']:
+
+            if ext in [".py", ".js", ".ts", ".java", ".cpp", ".c", ".go", ".rs"]:
                 analysis["languages"].add(ext[1:])
-            elif ext in ['.md', '.rst', '.txt']:
+            elif ext in [".md", ".rst", ".txt"]:
                 analysis["is_docs"] = True
-            elif 'test' in file.lower() or ext in ['.test.js', '.spec.js']:
+            elif "test" in file.lower() or ext in [".test.js", ".spec.js"]:
                 analysis["is_test"] = True
-            elif file in ['package.json', 'requirements.txt', 'Cargo.toml', 'pom.xml']:
+            elif file in ["package.json", "requirements.txt", "Cargo.toml", "pom.xml"]:
                 analysis["is_config"] = True
-        
+
         # Analyze diff content
         if diff:
             diff_lower = diff.lower()
-            if any(keyword in diff_lower for keyword in ['fix', 'bug', 'error', 'issue']):
+            if any(
+                keyword in diff_lower for keyword in ["fix", "bug", "error", "issue"]
+            ):
                 analysis["is_bug_fix"] = True
-            if any(keyword in diff_lower for keyword in ['add', 'new', 'feature', 'implement']):
+            if any(
+                keyword in diff_lower
+                for keyword in ["add", "new", "feature", "implement"]
+            ):
                 analysis["is_new_feature"] = True
-            if any(keyword in diff_lower for keyword in ['refactor', 'cleanup', 'reorganize']):
+            if any(
+                keyword in diff_lower
+                for keyword in ["refactor", "cleanup", "reorganize"]
+            ):
                 analysis["is_refactor"] = True
-            if 'breaking' in diff_lower or 'breaking change' in diff_lower:
+            if "breaking" in diff_lower or "breaking change" in diff_lower:
                 analysis["has_breaking_changes"] = True
-        
+
         return analysis
-    
+
     def create_system_prompt(self) -> str:
         """Create the system prompt for the AI model."""
         return """You are an expert software developer writing Git commit messages.
 
 Generate a concise, clear commit message following these guidelines:
 
-1. Use conventional commits format: "type: commit title" followed by a description.
-2. You MUST place an empty line between the title and description
-3. Types: feat, fix, docs, style, refactor, perf, test, chore, build, ci
-4. Keep the commit title under 50 characters. Don't end with a period
-5. Use imperative mood (e.g., "add", "fix", "update")
-6. Be specific about what changed and why
-7. If multiple files are changed, summarize the main changes
+1. Use conventional commits format: type(scope): description
+2. Types: feat, fix, docs, style, refactor, perf, test, chore, build, ci
+3. Keep the first line under 50 characters
+4. Use imperative mood (e.g., "add", "fix", "update")
+5. Don't end with a period
+6. Be specific about what changed
 
 Examples:
-```
-feat: add OAuth2 login support
-
-This commit adds support for OAuth2 login, allowing users to authenticate using their Google or GitHub accounts.
-```
+- feat(auth): add OAuth2 login support
+- fix(parser): resolve memory leak in JSON processing
+- docs(api): update authentication examples
+- refactor(utils): extract validation helpers
+- test(api): add unit tests for user service
 
 Analyze the provided diff and generate an appropriate commit message. 
 Return ONLY the commit message, nothing else."""
-    
-    def create_user_prompt(self, diff: str, files: List[str], analysis: Dict[str, Any], branch: Optional[str]) -> str:
+
+    def create_user_prompt(
+        self,
+        diff: str,
+        files: List[str],
+        analysis: Dict[str, Any],
+        branch: Optional[str],
+    ) -> str:
         """Create the user prompt with context."""
         prompt_parts = []
-        
+
         # Add branch context
-        if branch and branch not in ['main', 'master', 'develop']:
+        if branch and branch not in ["main", "master", "develop"]:
             prompt_parts.append(f"Branch: {branch}")
-        
+
         # Add file summary
         if files:
-            prompt_parts.append(f"Files changed ({len(files)}): {', '.join(files[:10])}")
+            prompt_parts.append(
+                f"Files changed ({len(files)}): {', '.join(files[:10])}"
+            )
             if len(files) > 10:
                 prompt_parts.append("... and more")
-        
+
         # Add change analysis
         if analysis["is_new_feature"]:
             prompt_parts.append("Type: New feature detected")
@@ -175,29 +192,29 @@ Return ONLY the commit message, nothing else."""
             prompt_parts.append("Type: Documentation change")
         elif analysis["is_test"]:
             prompt_parts.append("Type: Test changes")
-        
+
         # Add diff (truncated if too long)
         prompt_parts.append("\nGit diff:")
-        if len(diff) > 16000:  # Truncate very long diffs
-            prompt_parts.append(diff[:16000] + "\n... [diff truncated]")
+        if len(diff) > 4000:  # Truncate very long diffs
+            prompt_parts.append(diff[:4000] + "\n... [diff truncated]")
         else:
             prompt_parts.append(diff)
-        
+
         return "\n".join(prompt_parts)
-    
+
     def generate_commit_message(self) -> str:
         """Generate a commit message using GitHub Models."""
         # Get git information
         diff = self.get_staged_diff()
         files = self.get_staged_files()
         branch = self.get_current_branch()
-        
+
         if not diff and not files:
             return "chore: update files"
-        
+
         # Analyze changes
         analysis = self.analyze_changes(diff, files)
-        
+
         # Create prompts
         system_prompt = self.create_system_prompt()
         user_prompt = self.create_user_prompt(diff, files, analysis, branch)
@@ -211,13 +228,19 @@ Return ONLY the commit message, nothing else."""
                 temperature=0.3,  # Lower temperature for more consistent output
                 top_p=0.9,
                 model=self.model,
-                max_tokens=100  # Keep it concise
+                max_tokens=100,  # Keep it concise
             )
-            
+
             commit_message = response.choices[0].message.content.strip()
-            
+
+            # Clean up the message
+            commit_message = commit_message.strip("\"'`")  # Remove quotes
+            commit_message = re.sub(
+                r"\n+", "\n", commit_message
+            )  # Remove extra newlines
+
             return commit_message
-            
+
         except Exception as e:
             print(f"Error generating commit message: {e}")
             # Fallback to basic message
@@ -229,9 +252,9 @@ Return ONLY the commit message, nothing else."""
 def should_skip_generation(commit_source: Optional[str], commit_msg_file: str) -> bool:
     """Check if we should skip AI generation."""
     # Skip for certain commit types
-    if commit_source in ['merge', 'template', 'squash']:
+    if commit_source in ["merge", "template", "squash"]:
         return True
-    
+
     return False
 
 
@@ -240,32 +263,33 @@ def main():
     if len(sys.argv) < 2:
         print("Error: Missing commit message file argument")
         sys.exit(1)
-    
+
     commit_msg_file = sys.argv[1]
     commit_source = sys.argv[2] if len(sys.argv) > 2 else None
     commit_sha = sys.argv[3] if len(sys.argv) > 3 else None
-    
-    print(f"Running prepare-commit-msg hook for {commit_msg_file} (source: {commit_source}, SHA: {commit_sha})")
-    
+
+    print(
+        f"Running prepare-commit-msg hook for {commit_msg_file} (source: {commit_source}, SHA: {commit_sha})"
+    )
+
     # Check if we should skip generation
     if should_skip_generation(commit_source, commit_msg_file):
         print("Skipping AI generation for this commit")
         sys.exit(0)
-    
+
     try:
         # Generate commit message
         generator = GitHubModelsCommitGenerator()
         commit_message = generator.generate_commit_message()
-        
-        # first, let's see what's inside the commit message file
-        with open(commit_msg_file, 'r') as f:
-            existing_message = f.read().strip()
 
         # Write to commit message file
-        with open(commit_msg_file, 'w') as f:
-            f.write(commit_message + '\n\n')
-            f.write(existing_message)
-        
+        with open(commit_msg_file, "w") as f:
+            f.write(commit_message + "\n\n")
+            f.write("# AI-generated commit message\n")
+            f.write("# Edit above to customize, or delete to write manually\n")
+
+        print(f"✨ Generated commit message: {commit_message}")
+
     except ValueError as e:
         print(f"Configuration error: {e}")
         print("Please set GITHUB_TOKEN environment variable")
