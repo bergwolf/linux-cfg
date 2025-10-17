@@ -6,7 +6,7 @@ This hook analyzes staged changes and generates appropriate commit messages
 using GitHub's AI models.
 
 Setup:
-1. Set GITHUB_TOKEN environment variable
+1. Set LLM_ENDPOINT/LLM_TOKEN/LM_MODEL environment variables
 2. Install dependencies: pip install azure-ai-inference
 3. Make this file executable: chmod +x prepare-commit-msg
 4. Copy to .git/hooks/ in your repository
@@ -30,16 +30,16 @@ except ImportError:
     sys.exit(1)
 
 
-class GitHubModelsCommitGenerator:
-    """Generate commit messages using GitHub Models."""
+class CommitGenerator:
+    """Generate commit messages using AI Models via openAI APIs."""
 
     def __init__(self):
-        self.endpoint = "https://models.github.ai/inference"
-        self.model = "openai/gpt-4.1-mini"
-        self.token = os.environ.get("GITHUB_TOKEN")
+        self.endpoint = os.environ.get("LLM_ENDPOINT")
+        self.token = os.environ.get("LLM_TOKEN")
+        self.model = os.environ.get("LLM_MODEL")
 
-        if not self.token:
-            raise ValueError("GITHUB_TOKEN environment variable is required")
+        if not self.token or not self.endpoint or not self.model:
+            raise ValueError("LLM_ENDPOINT/LLM_TOKEN/LLM_MODEL environment variables are required")
 
         self.client = ChatCompletionsClient(
             endpoint=self.endpoint,
@@ -152,6 +152,7 @@ Generate a concise, clear commit message following these guidelines:
 8. Wrap the description at 120 characters, do not cut in the middle of a word
 9. Use present tense (e.g., "add feature" not "added feature")
 10. Describe key changes in separate paragraphs, with empty lines between them
+11. Try to be concise, do not exceed 1000 characters
 
 Examples:
 ```
@@ -160,7 +161,7 @@ auth: add OAuth2 login support
 This commit adds support for OAuth2 login, allowing users to authenticate using their Google or GitHub accounts.
 ```
 
-Analyze the provided diff and generate an appropriate commit message. 
+Analyze the provided diff and generate an appropriate commit message.
 Return ONLY the commit message, nothing else."""
 
     def create_user_prompt(
@@ -207,7 +208,7 @@ Return ONLY the commit message, nothing else."""
         return "\n".join(prompt_parts)
 
     def generate_commit_message(self) -> str:
-        """Generate a commit message using GitHub Models."""
+        """Generate a commit message using AI Models."""
         # Get git information
         diff = self.get_staged_diff()
         files = self.get_staged_files()
@@ -232,7 +233,7 @@ Return ONLY the commit message, nothing else."""
                 temperature=0.3,  # Lower temperature for more consistent output
                 top_p=0.9,
                 model=self.model,
-                max_tokens=100,  # Keep it concise
+                max_tokens=500,  # Keep it concise
             )
 
             commit_message = response.choices[0].message.content.strip()
@@ -305,7 +306,7 @@ def main():
 
     try:
         # Generate commit message
-        generator = GitHubModelsCommitGenerator()
+        generator = CommitGenerator()
         commit_message = generator.generate_commit_message()
 
         # first, let's see what's inside the commit message file
@@ -319,7 +320,6 @@ def main():
 
     except ValueError as e:
         print(f"Configuration error: {e}")
-        print("Please set GITHUB_TOKEN environment variable")
         sys.exit(1)
     except Exception as e:
         print(f"Error in prepare-commit-msg hook: {e}")
