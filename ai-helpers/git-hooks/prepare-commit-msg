@@ -230,7 +230,7 @@ Return ONLY the commit message, nothing else."""
                     SystemMessage(system_prompt),
                     UserMessage(user_prompt),
                 ],
-                temperature=0.3,  # Lower temperature for more consistent output
+                temperature=0.1,  # Lower temperature for more consistent output
                 top_p=0.9,
                 model=self.model,
                 max_tokens=500,  # Keep it concise
